@@ -1,1 +1,1 @@
-# firebase-attendance-test
+# QR-Attendance
