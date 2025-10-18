@@ -275,9 +275,9 @@
                     <td>${event.lastDate || 'N/A'}</td>
                     <td class="text-end">
                         <div class="d-inline-flex gap-2">
-                            <button class="btn btn-sm btn-danger delete-event" data-event="${event.name}" data-event-id="${event.id || ''}">Delete</button>
-                            <button class="btn btn-sm btn-info view-event" data-event="${event.name}">View Details</button>
-                            <button class="btn btn-sm btn-primary start-event" data-event="${event.name}">Start Attendance</button>
+                            <button class="btn btn-sm btn-danger delete-event" data-event="${event.name || 'Unknown Event'}" data-event-id="${event.id || ''}">Delete</button>
+                            <button class="btn btn-sm btn-info view-event" data-event="${event.name || 'Unknown Event'}">View Details</button>
+                            <button class="btn btn-sm btn-primary start-event" data-event="${event.name || 'Unknown Event'}">Start Attendance</button>
                         </div>
                     </td>
                 `;
@@ -305,10 +305,17 @@
                 button.addEventListener('click', async function() {
                     const eventName = this.getAttribute('data-event');
                     const eventId = this.getAttribute('data-event-id');
+                    
+                    // Validate eventName
+                    if (!eventName || eventName === 'undefined' || eventName === 'null') {
+                        alert('Error: Event name is not valid. Cannot delete event.');
+                        return;
+                    }
+                    
                     if (confirm(`Are you sure you want to delete the event "${eventName}"? This will remove all attendance records for this event.`)) {
                         try {
                             if (firebaseDB) {
-                                if (eventId) {
+                                if (eventId && eventId !== 'undefined' && eventId !== 'null') {
                                     // Delete Firebase event
                                     await firebaseDB.deleteEvent(eventId);
                                 } else {

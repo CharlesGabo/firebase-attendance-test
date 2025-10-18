@@ -5,9 +5,10 @@ class FirebaseDatabaseService {
     constructor() {
         this.db = window.firebaseDb;
         this.services = window.firebaseServices;
-        this.studentsCollection = 'students';
-        this.attendanceCollection = 'attendance';
-        this.eventsCollection = 'events';
+        this.parentCollection = 'AttendanceSystem';
+        this.studentsCollection = `${this.parentCollection}_students`;
+        this.attendanceCollection = `${this.parentCollection}_attendance`;
+        this.eventsCollection = `${this.parentCollection}_events`;
     }
 
     // ===== STUDENT DATABASE OPERATIONS =====
@@ -146,6 +147,12 @@ class FirebaseDatabaseService {
 
     async getAttendanceRecordsByEvent(eventName) {
         try {
+            // Validate eventName
+            if (!eventName || eventName === undefined || eventName === null) {
+                console.warn('getAttendanceRecordsByEvent called with invalid eventName:', eventName);
+                return [];
+            }
+            
             const querySnapshot = await window.firebaseDb.collection(this.attendanceCollection)
                 .where('event', '==', eventName)
                 .get();
